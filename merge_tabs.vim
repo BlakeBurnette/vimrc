@@ -13,5 +13,5 @@ function MergeTabs()
   endif
 
   split
-  execute "buffer" bufferName
+  execute bufferName
 endfunction

@@ -24,3 +24,10 @@ autocmd BufWritePre * %s/\s\+$//e
 
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%91v.\+/
+
+map <Leader>x :exec getline(".")<cr>
+
+nmap <silent> <c-k> :wincmd k<CR>
+nmap <silent> <c-j> :wincmd j<CR>
+nmap <silent> <c-h> :wincmd h<CR>
+nmap <silent> <c-l> :wincmd l<CR>

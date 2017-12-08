@@ -1,15 +1,16 @@
 execute pathogen#infect()
+:let mapleader = ","
 syntax on
 filetype plugin indent on
 filetype plugin on
 set tabstop=2
 set expandtab
 set shiftwidth=2
+set number
 set relativenumber
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 set incsearch
 set hlsearch!
-nnoremap <CR> :set hlsearch!<CR>
 set ignorecase
 set smartcase
 
@@ -31,3 +32,6 @@ nmap <silent> <c-k> :wincmd k<CR>
 nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-l> :wincmd l<CR>
+nmap <leader>xd :%s/-%>/%>/g<CR>
+:nnoremap <space> dd
+:nnoremap <CR> :set hlsearch!<CR>

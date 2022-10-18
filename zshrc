@@ -89,7 +89,7 @@ fi
 # export SSH_KEY_PATH="~/.ssh/rsa_id"
 #
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export GOOGLE_API_KEY="AIzaSyDsjnSJu21KFIH_AHcr2MXUYYqMBbJjzg8"
+export GOOGLE_API_KEY=""
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh

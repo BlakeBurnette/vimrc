@@ -4,6 +4,9 @@
 # Path to your oh-my-zsh installation.
 export ZSH=/Users/blakeburnette/.oh-my-zsh
 
+# Load secrets (API keys, database URLs, etc.)
+[ -f ~/.secrets ] && source ~/.secrets
+
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
@@ -89,7 +92,6 @@ fi
 # export SSH_KEY_PATH="~/.ssh/rsa_id"
 #
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export GOOGLE_API_KEY=""
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -146,3 +148,85 @@ export PATH="/usr/local/opt/mongodb-community@3.6/bin:$PATH"
 export ELASTICSEARCH_COMMAND=/usr/local/opt/elasticsearch@6/bin/elasticsearch
 export PATH="/usr/local/opt/elasticsearch@6/bin:$PATH"
 export PATH="/usr/local/opt/mongodb-community@3.6/bin:$PATH"
+export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+
+
+# Load a DATABASE_URL from ~/.secrets by env name
+_db_set_env() {
+  if [ ! -f ~/.secrets ]; then
+    echo "~/.secrets not found"
+    return 1
+  fi
+
+  source ~/.secrets
+
+  env="$1"
+  url=$(eval echo \$$env)
+
+  if [ -z "$url" ]; then
+    echo "Unknown environment: $env"
+    echo "Available environments: local, staging, prod, demo"
+    return 1
+  fi
+
+  export DATABASE_URL="$url"
+}
+
+# Run migration UP
+up() {
+  if [ $# -lt 2 ]; then
+    echo "Usage: up <env> <migration_name>"
+    echo "Example: up prod 0001_create_users"
+    return 1
+  fi
+
+  env="$1"
+  migration="$2"
+
+  _db_set_env "$env" || return 1
+
+  file="db/migrations/${migration}.up.sql"
+
+  if [ ! -f "$file" ]; then
+    echo "Migration file not found: $file"
+    return 1
+  fi
+
+  echo "Running UP migration"
+  echo "Environment: $env"
+  echo "Database: $DATABASE_URL"
+  echo "File: $file"
+  echo "-----------------------------"
+
+  psql "$DATABASE_URL" -f "$file"
+}
+
+# Run migration DOWN
+down() {
+  if [ $# -lt 2 ]; then
+    echo "Usage: down <env> <migration_name>"
+    echo "Example: down prod 0001_create_users"
+    return 1
+  fi
+
+  env="$1"
+  migration="$2"
+
+  _db_set_env "$env" || return 1
+
+  file="db/migrations/${migration}.down.sql"
+
+  if [ ! -f "$file" ]; then
+    echo "Migration file not found: $file"
+    return 1
+  fi
+
+  echo "Running DOWN migration"
+  echo "Environment: $env"
+  echo "Database: $DATABASE_URL"
+  echo "File: $file"
+  echo "-----------------------------"
+
+  psql "$DATABASE_URL" -f "$file"
+}
+export PATH="$HOME/.local/bin:$PATH"
